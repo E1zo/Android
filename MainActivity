@@ -1,0 +1,51 @@
+package com.example.contextprovider;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.text.TextUtils;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        List<String> contactsList = new ArrayList<String>();
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        List<String> list = new ArrayList<String>();
+        Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        String phoneNumber;
+        String phoneName;
+        //while(cursor.moveToNext()){}这两种遍历方式一样
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String displayName = cursor.getString(cursor.getColumnIndex(
+                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            String number = cursor.getString(cursor.getColumnIndex(
+                    ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+            System.out.println("phoneNumber:" + number + "phoneName:" + displayName);
+            contactsList.add(displayName + "\n" + number);
+
+
+            ListView listview = (ListView) findViewById(R.id.lst1);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, contactsList);
+            listview.setAdapter(adapter);
+
+        }
+
+    }
+
+
+}
+
